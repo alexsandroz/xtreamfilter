@@ -45,7 +45,7 @@ def _build_upstream_url(source: dict, content_type: str, original_id: int, ext: 
     username = source["username"]
     password = source["password"]
     if content_type == "live":
-        return f"{host}/{username}/{password}/{original_id}.{ext}"
+        return f"{host}/live/{username}/{password}/{original_id}.{ext}"
     elif content_type == "vod":
         return f"{host}/movie/{username}/{password}/{original_id}.{ext}"
     elif content_type == "series":
@@ -170,7 +170,10 @@ async def get_player_info(
 
     # Build the proxy stream URL (always proxied for in-browser playback / CORS)
     if content_type == "live":
-        stream_url = f"/merged/live/user/pass/{source_index * 10_000_000 + stream_id}.{fmt}"
+        if source['route'] == 'perfeito':
+            stream_url = f"/merged/live/user/pass/{source_index * 10_000_000 + stream_id}.m3u8"
+        else:    
+            stream_url = f"/merged/user/pass/{source_index * 10_000_000 + stream_id}.{fmt}"
     elif content_type == "vod":
         stream_url = f"/merged/movie/user/pass/{source_index * 10_000_000 + stream_id}.{fmt}"
     elif content_type == "series":
