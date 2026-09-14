@@ -33,7 +33,10 @@ async def proxy_live_stream_merged(
     if not source:
         return Response(content="Source not found", status_code=404)
     host = source["host"].rstrip("/")
-    upstream_url = f"{host}/{source['username']}/{source['password']}/{original_id}.{ext}"
+    if source['route'] == 'perfeito':
+        upstream_url = f"{host}/live/{source['username']}/{source['password']}/{original_id}.ts"
+    else:
+        upstream_url = f"{host}/{source['username']}/{source['password']}/{original_id}.{ext}"
     if cfg.get_proxy_enabled():
         return await proxy_stream(upstream_url, request, stream_type="live")
     return RedirectResponse(url=upstream_url, status_code=302)
